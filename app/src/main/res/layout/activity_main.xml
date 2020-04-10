@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="140dp">
+
+        <TextView
+
+            android:textStyle="bold"
+            android:textColor="@color/forTextView"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:text="MyTimer App"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="-30dp"
+        android:background="@drawable/for_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:onClick="onClickImage"
+            android:background="@color/forTextView"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+            android:src="@drawable/mytimer"
+            android:layout_width="300dp"
+            android:layout_height="300dp"/>
+
+        <TextView
+            android:id="@+id/textview"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:textSize="40sp"
+            android:text="00:30"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/subtext"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="change time with SeekBar below"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <SeekBar
+            android:id="@+id/seekbar"
+            style="@style/MySeekBar"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:background="@drawable/for_button"
+            android:textAllCaps="false"
+            android:text="Start"
+            android:textSize="30sp"
+            android:onClick="Start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
