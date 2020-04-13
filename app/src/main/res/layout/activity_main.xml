@@ -7,6 +7,12 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
+    <androidx.appcompat.widget.Toolbar
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"/>
+
     <LinearLayout
         android:background="@color/colorPrimaryDark"
         android:layout_width="match_parent"
@@ -16,9 +22,9 @@
 
             android:textStyle="bold"
             android:textColor="@color/forTextView"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="0dp"
             android:gravity="center"
-            android:textSize="30sp"
+            android:textSize="35sp"
             android:text="MyTimer App"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

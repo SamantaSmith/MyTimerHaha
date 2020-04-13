@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+
+        android:defaultValue="true"
+        android:key="enable_sound"
+        android:title="Enable Sound"
+        android:summaryOn="Sound Enabled"
+        android:summaryOff="Sound Disabled"
+        />
+
+    <CheckBoxPreference
+
+        android:defaultValue="true"
+        android:key="enable_vibrate"
+        android:title="Enable Vibrate"
+        android:summaryOn="Vibrate Enabled"
+        android:summaryOff="Vibrate Disabled"
+        />
+
+    <ListPreference
+
+        android:title="Timer melody"
+        android:key="timer_melody"
+        android:defaultValue="fly_away"
+        android:entries="@array/pref_timer_melody_labels"
+        android:entryValues="@array/pref_timer_melody_values"
+
+        />
+
+</PreferenceScreen>

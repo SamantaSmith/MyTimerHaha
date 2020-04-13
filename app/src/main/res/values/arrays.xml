@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name = "pref_timer_melody_labels">
+
+        <item>Bikini bottom with soam GTA</item>
+        <item>Fly Away peepoDance</item>
+        <item>O velikiy SUP NAVARILI</item>
+
+    </array>
+
+    <array name = "pref_timer_melody_values">
+
+        <item>bikinibottom</item>
+        <item>fly_away</item>
+        <item>velikiysup</item>
+
+    </array>
+
+</resources>
