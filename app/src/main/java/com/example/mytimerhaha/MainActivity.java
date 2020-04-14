@@ -11,6 +11,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,11 +19,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private SeekBar seekBar;
     private TextView textView;
@@ -34,10 +36,12 @@ public class MainActivity extends AppCompatActivity {
     private Boolean musicFlag;
 
     private MediaPlayer mediaPlayer;
-
     private Vibrator vibrator;
 
     private androidx.appcompat.widget.Toolbar toolbar;
+
+    private int defaultInterval;
+    SharedPreferences sharedPreferences;
 
 
 
@@ -51,9 +55,11 @@ public class MainActivity extends AppCompatActivity {
         button = findViewById(R.id.button);
         subText = findViewById(R.id.subtext);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
 
         seekBar.setMax(600);
-        seekBar.setProgress(30);
+        setIntervalFromSharedPreferences(PreferenceManager.getDefaultSharedPreferences(this));
 
         isTimerOn = false;
         musicLag = "null";
@@ -83,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     public void Start(View view) {
@@ -106,44 +114,29 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFinish() {
 
-                    SharedPreferences sharedPreferences =
-                            PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-                     if (sharedPreferences.getBoolean("enable_sound", true)
-                             && sharedPreferences.getBoolean("enable_vibrate", true)) {
-
-                                Music("vibrate_and_sound", true);
-                     } /*else if (sharedPreferences.getBoolean("enable_sound", true)
-                             && sharedPreferences.getBoolean("enable_vibrate", false)) {
-
-                         Music("sound_without_vibrate", true);
-                     } else if (sharedPreferences.getBoolean("enable_sound", false)
-                             && sharedPreferences.getBoolean("enable_vibrate", true)) {
-
-                         Music("vibrate_without_sound", true);
-                     } */else  {
-
-                         Music("no_vibrate_no_sound", true);
-                     }
+                    MusicAdapter();
 
                     textView.setText("Timer has finished, press Stop for new timer <3");
                     textView.setTextSize(20);
                     subText.setText("");
+
+
                 }
             };
 
             countDownTimer.start();
         } else {
 
-            Music("", false);
+            Music("",false, false, false);
+
+
+            setIntervalFromSharedPreferences(sharedPreferences);
             subText.setText("Change time with SeekBar below");
             countDownTimer.cancel();
-            textView.setText("00:30");
             textView.setTextSize(40);
             button.setText("Start");
             seekBar.setEnabled(true);
             seekBar.setVisibility(View.VISIBLE);
-            seekBar.setProgress(30);
             isTimerOn = false;
 
         }
@@ -178,41 +171,61 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public void Music(String musicLag, boolean musicFlag) {
+
+
+    public void MusicAdapter() {
+
+        boolean internalMusicFlagSound = false;
+        boolean internalMusicFlagVibrate = false;
+        String musicName;
+
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        if (sharedPreferences.getBoolean("enable_sound", true)) {
+                internalMusicFlagSound = true;
+            }
+
+        if (sharedPreferences.getBoolean("enable_vibrate", true)) {
+            internalMusicFlagVibrate = true;
+        }
+
+        musicName = sharedPreferences.getString("timer_melody", "fly_away");
+
+        Music(musicName, internalMusicFlagSound, internalMusicFlagVibrate, true);
+        }
+
+
+    public void Music(String musicChoose, boolean musicFlag, boolean vibrateFlag, boolean isPlaying) {
 
         if  (musicFlag == true) {
 
-            long[] mill = {1000, 1000};
-            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (musicChoose.equals("fly_away")) {
+
             mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.fly_away);
+            mediaPlayer.start();}
+            else if (musicChoose.equals("bikinibottom")) {
 
-            switch (musicLag) {
+                mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.bikinibottom);
+                mediaPlayer.start();
+            } else {
 
-                case "vibrate_and_sound":
-                    vibrator.vibrate(mill, 0);
-                    mediaPlayer.start();
-                    break;
-
-                case "sound_without_vibrate":
-                    mediaPlayer.start();
-                    break;
-
-                case "vibrate_without_sound":
-                    vibrator.vibrate(mill, 0);
-                    break;
-
-                case "no_vibrate_no_sound":
-                    break;
+                mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.velikysup);
+                mediaPlayer.start();
             }
         }
-        else {
 
+        if (vibrateFlag ==  true) {
+            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            long[] mill = {1000, 1000};
+            vibrator.vibrate(mill, 0);
+        }
+
+        if (isPlaying == false){
             vibrator.cancel();
             mediaPlayer.reset();
         }
-
     }
-
 
 
     @Override
@@ -235,5 +248,30 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void setIntervalFromSharedPreferences(SharedPreferences sharedPreferences) {
+
+        defaultInterval = Integer.valueOf(sharedPreferences.getString("default_interval", "30"));
+        long dIntervalMillis = defaultInterval*1000;
+        updateTimer(dIntervalMillis);
+        seekBar.setProgress(defaultInterval);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        if (key.equals("default_interval")) {
+
+            setIntervalFromSharedPreferences(sharedPreferences);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 }
